@@ -1,5 +1,6 @@
 # app.py
 from __future__ import annotations
+from pathlib import Path
 
 import io
 from datetime import date
@@ -11,11 +12,6 @@ import streamlit as st
 
 import os
 import sys
-
-st.write("Current working directory:", os.getcwd())
-st.write("This file:", __file__)
-st.write("sys.path:", sys.path)
-st.write("Root contents:", os.listdir(os.getcwd()))
 
 from fsdhelpers import config
 from fsdhelpers.data_prep import add_derived_fields, load_dataset, resolve_window
@@ -31,9 +27,7 @@ from fsdhelpers.charts import make_entity_chart, period_label
 from fsdhelpers.narrative import build_narrative
 from fsdhelpers.report import build_report_html
 
-
 st.set_page_config(page_title="Distribution Trend Calculator", layout="wide")
-
 
 def _format_pct(x) -> str:
     if pd.isna(x):
@@ -47,23 +41,23 @@ def _format_pct(x) -> str:
     except Exception:
         return ""
 
-
 def _period_label(granularity: str, period_key: pd.Timestamp) -> str:
     return period_label(granularity, period_key)
-
 
 st.title("Distribution Trend Calculator")
 
 # --- Data path ---
 st.subheader("Data Source")
-data_path = st.text_input("Local file path (CSV or XLSX)", value="ProgramDistribution-idlrOG.csv")
+
+APP_DIR = Path(__file__).resolve().parent
+CSV_PATH = APP_DIR / "ProgramDistribution-idlrOG.csv"
 
 try:
-    df_raw = load_dataset(data_path)
+    df_raw = load_dataset(data_path=CSV_PATH)
     df = add_derived_fields(df_raw)
     
     with st.expander("DEBUG: Gross Weight parsing", expanded=True):
-        st.write("File path:", data_path)
+        st.write("File path:", CSV_PATH)
         st.write("Rows loaded:", len(df_raw))
 
         # raw column before conversion is in df_raw
