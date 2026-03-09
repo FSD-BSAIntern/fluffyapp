@@ -104,7 +104,7 @@ def clean_qc_log_df(qclog: pd.DataFrame) -> pd.DataFrame:
     cleaned_qc_log["Shipment Date"] = pd.to_datetime(
         cleaned_qc_log["Shipment Date"],
         errors="coerce",
-        format="%m/%d/%Y"
+        format="mixed"
     )
 
     cleaned_qc_log["order_key"] = _make_order_key(cleaned_qc_log["Agency Order #"])
