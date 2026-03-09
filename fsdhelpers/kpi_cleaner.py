@@ -14,17 +14,17 @@ def _make_order_key(series: pd.Series) -> pd.Series:
 def load_orders(path: Path | str | None = None) -> pd.DataFrame:
     if path is None:
         path = config.ORDERS_FILE
-    return pd.read_csv(path)
+    return pd.read_csv(path, encoding="latin-1")
 
 def load_weights(path: Path | str | None = None) -> pd.DataFrame:
     if path is None:
         path = config.WEIGHTS_FILE
-    return pd.read_csv(path)
+    return pd.read_csv(path, encoding="latin-1")
 
 def load_qclog(path: Path | str | None = None) -> pd.DataFrame:
     if path is None:
         path = config.QCLOG_FILE
-    return pd.read_csv(path)
+    return pd.read_csv(path, encoding="latin-1" )
 
 orders  = load_orders()
 weights = load_weights()
