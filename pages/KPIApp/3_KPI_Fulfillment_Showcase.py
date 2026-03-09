@@ -6,48 +6,50 @@ from fsdhelpers import kpi_summaries
 
 st.title("KPI Optimization Model")
 
-from fsdhelpers.kpi_cleaner import load_orders, load_qclog, load_weights, clean_qc_log_df, clean_orders_df, clean_weights_df
-
-st.title("KPI Fulfillment Showcase")
-
 orders_raw = load_orders()
 qclog_raw = load_qclog()
 weights_raw = load_weights()
 
-st.subheader("Raw file diagnostics")
+orders = clean_orders_df(orders_raw)
+qclog = clean_qc_log_df(qclog_raw)
+weights = clean_weights_df(weights_raw)
 
-st.write("Orders columns:", list(orders_raw.columns))
-st.write("QC columns:", list(qclog_raw.columns))
-st.write("Weights columns:", list(weights_raw.columns))
+st.subheader("Join diagnostics")
 
-st.write("Raw QC Shipment Date sample:")
-if "Shipment Date" in qclog_raw.columns:
-    st.write(qclog_raw["Shipment Date"].head(20).tolist())
-    st.write("Raw QC Shipment Date dtype:", qclog_raw["Shipment Date"].dtype)
-else:
-    st.error("Shipment Date column not found in QC log.")
-    st.stop()
+st.write("Orders rows:", len(orders))
+st.write("QC rows:", len(qclog))
+st.write("Weights rows:", len(weights))
 
-st.write("Raw QC Agency Order # sample:")
-if "Agency Order #" in qclog_raw.columns:
-    st.write(qclog_raw["Agency Order #"].head(20).tolist())
-else:
-    st.error("Agency Order # column not found in QC log.")
-    st.stop()
+st.write("Orders unique keys:", orders["order_key"].nunique())
+st.write("QC unique keys:", qclog["order_key"].nunique())
+st.write("Weights unique keys:", weights["order_key"].nunique())
 
-cleaned_qc = clean_qc_log_df(qclog_raw)
+orders_keys = set(orders["order_key"].dropna())
+qc_keys = set(qclog["order_key"].dropna())
+weights_keys = set(weights["order_key"].dropna())
 
-st.subheader("Cleaned QC diagnostics")
-st.write("Cleaned QC Shipment Date sample:", cleaned_qc["Shipment Date"].head(20).tolist())
-st.write("Non-null cleaned Shipment Date count:", int(cleaned_qc["Shipment Date"].notna().sum()))
-st.write("Cleaned QC order_key sample:", cleaned_qc["order_key"].head(20).tolist())
+st.write("Orders ∩ QC:", len(orders_keys & qc_keys))
+st.write("Orders ∩ Weights:", len(orders_keys & weights_keys))
+st.write("QC ∩ Weights:", len(qc_keys & weights_keys))
+st.write("Orders ∩ QC ∩ Weights:", len(orders_keys & qc_keys & weights_keys))
+
+st.write("Sample Orders keys:", sorted(list(orders_keys))[:20])
+st.write("Sample QC keys:", sorted(list(qc_keys))[:20])
+st.write("Sample Weights keys:", sorted(list(weights_keys))[:20])
+
+merged_1 = orders.merge(qclog, on="order_key", how="inner")
+st.write("Rows after orders + qc merge:", len(merged_1))
+
+merged_2 = merged_1.merge(weights, on="order_key", how="inner")
+st.write("Rows after weights merge:", len(merged_2))
 
 st.stop()
 
+@st.cache_data
+def load_master():
+    return load_and_build_master()
+
 master = load_master()
-st.write(master["Shipment Date"].head(10))
-st.write(master["Shipment Date"].dtype)
-st.write(master["Shipment Date"].isna().sum())
 
 tab_model, tab_method = st.tabs(
     ["KPI Model", "Parameters & Preparation Showcase"]
