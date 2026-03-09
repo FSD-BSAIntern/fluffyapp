@@ -51,6 +51,7 @@ st.subheader("Data Source")
 
 APP_DIR = Path(__file__).resolve().parent
 CSV_PATH = APP_DIR / "ProgramDistribution-idlrOG.csv"
+print(str(CSV_PATH))
 
 try:
     df_raw = load_dataset(str(CSV_PATH))
