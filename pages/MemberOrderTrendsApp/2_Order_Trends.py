@@ -53,7 +53,7 @@ APP_DIR = Path(__file__).resolve().parent
 CSV_PATH = APP_DIR / "ProgramDistribution-idlrOG.csv"
 
 try:
-    df_raw = load_dataset(CSV_PATH)
+    df_raw = load_dataset(str(CSV_PATH))
     df = add_derived_fields(df_raw)
     
     with st.expander("DEBUG: Gross Weight parsing", expanded=True):
