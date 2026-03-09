@@ -4,6 +4,7 @@ import pandas as pd
 
 from . import config
 
+
 def _make_order_key(series: pd.Series) -> pd.Series:
     return (
         series.astype(str)
@@ -11,24 +12,24 @@ def _make_order_key(series: pd.Series) -> pd.Series:
         .str.lower()
     )
 
+
 def load_orders(path: Path | str | None = None) -> pd.DataFrame:
     if path is None:
         path = config.ORDERS_FILE
-    return pd.read_csv(path, encoding="latin-1")
+    return pd.read_csv(path, encoding="latin-1", low_memory=False)
+
 
 def load_weights(path: Path | str | None = None) -> pd.DataFrame:
     if path is None:
         path = config.WEIGHTS_FILE
-    return pd.read_csv(path, encoding="latin-1")
+    return pd.read_csv(path, encoding="latin-1", low_memory=False)
+
 
 def load_qclog(path: Path | str | None = None) -> pd.DataFrame:
     if path is None:
         path = config.QCLOG_FILE
-    return pd.read_csv(path, encoding="latin-1" )
+    return pd.read_csv(path, encoding="latin-1", low_memory=False)
 
-orders  = load_orders()
-weights = load_weights()
-qclog   = load_qclog()
 
 def clean_weights_df(weights: pd.DataFrame) -> pd.DataFrame:
     weights_df = weights.copy()
@@ -48,19 +49,22 @@ def clean_weights_df(weights: pd.DataFrame) -> pd.DataFrame:
     )
     weights_df["Gross Weight"] = pd.to_numeric(weights_df["Gross Weight"], errors="coerce")
 
-    weights_df["order_key"] = weights_df["Document No"].astype(str).str.extract(r"([A-Za-z]+-\d+)")[0]
+    weights_df["order_key"] = weights_df["Document No"].str.extract(r"([A-Za-z]+-\d+)")[0]
+    weights_df["order_key"] = _make_order_key(weights_df["order_key"])
 
     drop_cols = ["Fiscal Year", "Fiscal Month", "Fiscal Quarter", "Document No"]
     weights_df = weights_df.drop(columns=[c for c in drop_cols if c in weights_df.columns])
 
     weights_df = weights_df[weights_df["FBC Product Type Code"] != 28]
 
+    weights_df["Date"] = pd.to_datetime(weights_df["Date"], errors="coerce")
+
     weights_df = (
         weights_df.groupby("order_key", dropna=False)
         .agg(
             Gross_Weight=("Gross Weight", "sum"),
-            Shipment_Date=("Date", "first"),
-            Agency_Name=("Bill-to Agency", "first"),
+            Shipment_Date_Weights=("Date", "first"),
+            Agency_Name_Weights=("Bill-to Agency", "first"),
             FBC_Product_Type_Code=("FBC Product Type Code", "first"),
             Total_Cases=("Quantity", "sum"),
         )
@@ -100,16 +104,13 @@ def clean_qc_log_df(qclog: pd.DataFrame) -> pd.DataFrame:
     cleaned_qc_log["Shipment Date"] = pd.to_datetime(
         cleaned_qc_log["Shipment Date"],
         errors="coerce",
-        format="%m/%d/%Y"
+        format="mixed"
     )
 
-    cleaned_qc_log["order_key"] = (
-        cleaned_qc_log["Agency Order #"]
-        .astype(str)
-        .str.strip()
-    )
+    cleaned_qc_log["order_key"] = _make_order_key(cleaned_qc_log["Agency Order #"])
 
     return cleaned_qc_log.reset_index(drop=True)
+
 
 def build_master_dataset(
     orders: pd.DataFrame,
@@ -120,8 +121,15 @@ def build_master_dataset(
     cleaned_qc_log = clean_qc_log_df(qclog)
     weights_df = clean_weights_df(weights)
 
+    print("Orders unique keys:", cleaned_orders["order_key"].nunique())
+    print("QC unique keys:", cleaned_qc_log["order_key"].nunique())
+    print("Weights unique keys:", weights_df["order_key"].nunique())
+
     merged_data = cleaned_orders.merge(cleaned_qc_log, on="order_key", how="inner")
+    print("After orders + qc merge:", len(merged_data))
+
     merged_data = merged_data.merge(weights_df, on="order_key", how="inner")
+    print("After weights merge:", len(merged_data))
 
     master = merged_data.copy()
 
@@ -145,15 +153,15 @@ def build_master_dataset(
     master["No. of Pallets"] = pd.to_numeric(master["No. of Pallets"], errors="coerce")
     master["Shipment Date"] = pd.to_datetime(master["Shipment Date"], errors="coerce")
 
-    master["Shipment Date"] = pd.to_datetime(master["Shipment Date"], errors="coerce")
     master = master[master["Shipment Date"].notna()].copy()
-    master = master[master["Shipment Date"] < pd.Timestamp("11-16-2025")].reset_index(drop=True)
+    master = master[master["Shipment Date"] < pd.Timestamp("2025-11-16")].reset_index(drop=True)
 
     print("Master row count:", len(master))
     print("Shipment Date non-null:", master["Shipment Date"].notna().sum())
     print("Shipment Date sample:", master["Shipment Date"].head(10).tolist())
 
     return master
+
 
 def load_and_build_master() -> pd.DataFrame:
     orders = load_orders()
