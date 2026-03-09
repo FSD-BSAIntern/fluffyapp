@@ -104,7 +104,7 @@ def clean_qc_log_df(qclog: pd.DataFrame) -> pd.DataFrame:
     cleaned_qc_log["Shipment Date"] = pd.to_datetime(
         cleaned_qc_log["Shipment Date"],
         errors="coerce",
-        format="mixed"
+        format="%m/%d/%Y"
     )
 
     cleaned_qc_log["order_key"] = _make_order_key(cleaned_qc_log["Agency Order #"])
@@ -154,7 +154,6 @@ def build_master_dataset(
     master["Shipment Date"] = pd.to_datetime(master["Shipment Date"], errors="coerce")
 
     master = master[master["Shipment Date"].notna()].copy()
-    master = master[master["Shipment Date"] < pd.Timestamp("2025-11-16")].reset_index(drop=True)
 
     print("Master row count:", len(master))
     print("Shipment Date non-null:", master["Shipment Date"].notna().sum())
