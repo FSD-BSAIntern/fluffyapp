@@ -44,7 +44,10 @@ def _format_pct(x) -> str:
 def _period_label(granularity: str, period_key: pd.Timestamp) -> str:
     return period_label(granularity, period_key)
 
-st.title("Member Distribution Trend(s) Calculator")
+# --- Streamlit UI ---
+st.title("Member Distribution Trend(s) Calculator 📈")
+st.write("This tool calculates trends in member or regional distribution over time, with the option to compare against a prior fiscal year. You can also download a copy of the report for further analysis.")
+st.sidebar.header("Find Something Cool!")
 
 # --- Data path ---
 # st.subheader("Data Source")

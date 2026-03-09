@@ -93,8 +93,9 @@ def score_row(q_norm: str, q_tokens: set[str], row: pd.Series) -> tuple[int, dic
     return score, why
 
 # ---------- Streamlit UI ----------
-st.title("Ceres6 Report / Field Query")
+st.title("Ceres6 Report / Field Query 🔍")
 st.write('Ask Something Like: "Where can I find agency delivery zone codes?"')
+st.sidebar.header("Break Me!")
 
 APP_DIR = Path(__file__).resolve().parent
 CSV_PATH = APP_DIR / "Ceres6 Cheatsheet.csv"
