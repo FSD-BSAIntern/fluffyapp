@@ -145,6 +145,8 @@ def build_master_dataset(
     master["No. of Pallets"] = pd.to_numeric(master["No. of Pallets"], errors="coerce")
     master["Shipment Date"] = pd.to_datetime(master["Shipment Date"], errors="coerce")
 
+    master["Shipment Date"] = pd.to_datetime(master["Shipment Date"], errors="coerce")
+    master = master[master["Shipment Date"].notna()].copy()
     master = master[master["Shipment Date"] < pd.Timestamp("11-16-2025")].reset_index(drop=True)
 
     return master
