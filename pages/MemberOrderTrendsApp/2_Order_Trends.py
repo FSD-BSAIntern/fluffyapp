@@ -56,8 +56,6 @@ try:
     df_raw = load_dataset(str(CSV_PATH))
     df = add_derived_fields(df_raw)
     
-     
-    # DEBUGGING: Gross Weight parsing issues have been a common source of errors, so we include some debug info here to help identify problems with the source data. */
     # with st.expander("DEBUG: Gross Weight parsing", expanded=True):
     #     st.write("File path:", CSV_PATH)
     #     st.write("Rows loaded:", len(df_raw))
@@ -95,28 +93,52 @@ try:
         default="Non-Produce"
         )
     
-    with st.expander("DEBUG: Product Type totals", expanded=True):
-        st.write("Total gross_weight (no filters):", float(df["gross_weight"].sum()))
-        st.dataframe(
-            df.groupby(["FBC Product Type Code", "_product_type_bucket"], as_index=False)["gross_weight"].sum()
-            .sort_values("gross_weight", ascending=False)
-            .head(40),
-            use_container_width=True,
-            hide_index=True
-        )
-        st.dataframe(
-            df.groupby("_product_type_bucket", as_index=False)["gross_weight"].sum()
-            .sort_values("gross_weight", ascending=False),
-            use_container_width=True,
-            hide_index=True
-        )
+    # with st.expander("DEBUG: Product Type totals", expanded=True):
+    #     st.write("Total gross_weight (no filters):", float(df["gross_weight"].sum()))
+    #     st.dataframe(
+    #         df.groupby(["FBC Product Type Code", "_product_type_bucket"], as_index=False)["gross_weight"].sum()
+    #         .sort_values("gross_weight", ascending=False)
+    #         .head(40),
+    #         use_container_width=True,
+    #         hide_index=True
+    #     )
+    #     st.dataframe(
+    #         df.groupby("_product_type_bucket", as_index=False)["gross_weight"].sum()
+    #         .sort_values("gross_weight", ascending=False),
+    #         use_container_width=True,
+    #         hide_index=True
+    #     )
 
-    st.caption(f"Loaded {len(df):,} rows.")
+    # st.caption(f"Loaded {len(df):,} rows.")
         
 except Exception as e:
     st.error(str(e))
     st.stop()
+    
+else:
+    df_raw = load_dataset(str(CSV_PATH))
+    df = add_derived_fields(df_raw)
+    
+     # --- Product Type Bucket ---
+    PT_COL = "FBC Product Type Code"
+    pt_num = pd.to_numeric(df[PT_COL], errors="coerce")
 
+    NONFOOD_CODES = {1, 2, 12, 13, 19, 20, 22}
+    PRODUCE_CODES = {28}
+
+    conditions = [
+        pt_num.isin(PRODUCE_CODES),
+        pt_num.isin(NONFOOD_CODES),
+        ]
+    
+    choices = ["Produce", "Non-Food"]
+    
+    df["_product_type_bucket"] = np.select(
+        conditions,
+        choices,
+        default="Non-Produce"
+        )
+    
 # --- Controls ---
 st.subheader("Report Controls")
 
