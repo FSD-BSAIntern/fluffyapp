@@ -116,7 +116,7 @@ except Exception as e:
     st.error(str(e))
     st.stop()
     
-else:
+finally:
     df_raw = load_dataset(str(CSV_PATH))
     df = add_derived_fields(df_raw)
     
