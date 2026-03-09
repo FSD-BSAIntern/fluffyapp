@@ -9,6 +9,6 @@ pages = [
 ]
 
 # Add pages to sidebar
-pg = st.navigation(pages, position="sidebar", expandable= True)
+pg = st.navigation(pages)
 
 pg.run()
