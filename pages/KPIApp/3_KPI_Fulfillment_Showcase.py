@@ -6,9 +6,43 @@ from fsdhelpers import kpi_summaries
 
 st.title("KPI Optimization Model")
 
-@st.cache_data
-def load_master():
-    return load_and_build_master()
+from fsdhelpers.kpi_cleaner import load_orders, load_qclog, load_weights, clean_qc_log_df, clean_orders_df, clean_weights_df
+
+st.title("KPI Fulfillment Showcase")
+
+orders_raw = load_orders()
+qclog_raw = load_qclog()
+weights_raw = load_weights()
+
+st.subheader("Raw file diagnostics")
+
+st.write("Orders columns:", list(orders_raw.columns))
+st.write("QC columns:", list(qclog_raw.columns))
+st.write("Weights columns:", list(weights_raw.columns))
+
+st.write("Raw QC Shipment Date sample:")
+if "Shipment Date" in qclog_raw.columns:
+    st.write(qclog_raw["Shipment Date"].head(20).tolist())
+    st.write("Raw QC Shipment Date dtype:", qclog_raw["Shipment Date"].dtype)
+else:
+    st.error("Shipment Date column not found in QC log.")
+    st.stop()
+
+st.write("Raw QC Agency Order # sample:")
+if "Agency Order #" in qclog_raw.columns:
+    st.write(qclog_raw["Agency Order #"].head(20).tolist())
+else:
+    st.error("Agency Order # column not found in QC log.")
+    st.stop()
+
+cleaned_qc = clean_qc_log_df(qclog_raw)
+
+st.subheader("Cleaned QC diagnostics")
+st.write("Cleaned QC Shipment Date sample:", cleaned_qc["Shipment Date"].head(20).tolist())
+st.write("Non-null cleaned Shipment Date count:", int(cleaned_qc["Shipment Date"].notna().sum()))
+st.write("Cleaned QC order_key sample:", cleaned_qc["order_key"].head(20).tolist())
+
+st.stop()
 
 master = load_master()
 st.write(master["Shipment Date"].head(10))
