@@ -1,6 +1,6 @@
+from pathlib import Path
+
 # config.py
-# Edit DATA_PATH to point to your local extract (CSV or XLSX).
-# Example: r"C:\Users\Isaiah\Downloads\orders_extract.xlsx"
 DATA_PATH = r"O:\Business Systems Analyst\Projects\CC_Isaiah De La Rosa\Program Tier Cost Project\PCMapp\ProgramDistribution-idlrOG.csv"
 
 # Column names expected in the dataset (exact, case-sensitive).
@@ -23,3 +23,12 @@ HH_BUCKETS = [
     ("L", 301, 600),
     ("XL", 601, float("inf")),
 ]
+
+# --- KPI Showcase ---
+
+ROOT_DIR = Path(__file__).resolve().parents[1]  # Assuming this file is in fsdhelpers
+KPI_DATA_DIR = ROOT_DIR / "pages" / "KPIApp" / "data"
+
+ORDERS_FILE = KPI_DATA_DIR / "Order Fulfillment Whiteboard (Current).csv"
+WEIGHTS_FILE = KPI_DATA_DIR / "OrderGrossWeightsUpdated.csv"
+QCLOG_FILE = KPI_DATA_DIR / "Quality Control Log.csv"
