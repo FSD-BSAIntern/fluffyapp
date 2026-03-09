@@ -149,6 +149,10 @@ def build_master_dataset(
     master = master[master["Shipment Date"].notna()].copy()
     master = master[master["Shipment Date"] < pd.Timestamp("11-16-2025")].reset_index(drop=True)
 
+    print("Master row count:", len(master))
+    print("Shipment Date non-null:", master["Shipment Date"].notna().sum())
+    print("Shipment Date sample:", master["Shipment Date"].head(10).tolist())
+
     return master
 
 def load_and_build_master() -> pd.DataFrame:
