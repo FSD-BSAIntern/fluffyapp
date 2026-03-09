@@ -11,8 +11,9 @@ def load_master():
     return load_and_build_master()
 
 master = load_master()
-
-master = load_master()
+st.write(master["Shipment Date"].head(10))
+st.write(master["Shipment Date"].dtype)
+st.write(master["Shipment Date"].isna().sum())
 
 tab_model, tab_method = st.tabs(
     ["KPI Model", "Parameters & Preparation Showcase"]
@@ -26,11 +27,19 @@ with tab_model:
 
     st.sidebar.header("Model Controls")
 
-    min_date = master["Shipment Date"].min()
-    max_date = master["Shipment Date"].max()
+    master["Shipment Date"] = pd.to_datetime(master["Shipment Date"], errors="coerce")
 
-    start_date = st.sidebar.date_input("Start Date", min_date)
-    end_date = st.sidebar.date_input("End Date", max_date)
+    valid_dates = master["Shipment Date"].dropna()
+
+    if valid_dates.empty:
+        st.error("No valid Shipment Date values were found in the dataset.")
+        st.stop()
+
+    min_date = valid_dates.min().date()
+    max_date = valid_dates.max().date()
+
+    start_date = st.sidebar.date_input("Start Date", value=min_date)
+    end_date = st.sidebar.date_input("End Date", value=max_date)
 
     period = st.sidebar.selectbox(
         "Period Level",
