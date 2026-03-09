@@ -1,53 +1,13 @@
 import streamlit as st
 import pandas as pd
 
-import streamlit as st
 from fsdhelpers.kpi_cleaner import (
-    load_orders, load_qclog, load_weights,
+    load_and_build_master, load_orders, load_qclog, load_weights,
     clean_orders_df, clean_qc_log_df, clean_weights_df
 )
 from fsdhelpers import kpi_summaries
 
 st.title("KPI Optimization Model")
-
-orders_raw = load_orders()
-qclog_raw = load_qclog()
-weights_raw = load_weights()
-
-orders = clean_orders_df(orders_raw)
-qclog = clean_qc_log_df(qclog_raw)
-weights = clean_weights_df(weights_raw)
-
-st.subheader("Join diagnostics")
-
-st.write("Orders rows:", len(orders))
-st.write("QC rows:", len(qclog))
-st.write("Weights rows:", len(weights))
-
-st.write("Orders unique keys:", orders["order_key"].nunique())
-st.write("QC unique keys:", qclog["order_key"].nunique())
-st.write("Weights unique keys:", weights["order_key"].nunique())
-
-orders_keys = set(orders["order_key"].dropna())
-qc_keys = set(qclog["order_key"].dropna())
-weights_keys = set(weights["order_key"].dropna())
-
-st.write("Orders ∩ QC:", len(orders_keys & qc_keys))
-st.write("Orders ∩ Weights:", len(orders_keys & weights_keys))
-st.write("QC ∩ Weights:", len(qc_keys & weights_keys))
-st.write("Orders ∩ QC ∩ Weights:", len(orders_keys & qc_keys & weights_keys))
-
-st.write("Sample Orders keys:", sorted(list(orders_keys))[:20])
-st.write("Sample QC keys:", sorted(list(qc_keys))[:20])
-st.write("Sample Weights keys:", sorted(list(weights_keys))[:20])
-
-merged_1 = orders.merge(qclog, on="order_key", how="inner")
-st.write("Rows after orders + qc merge:", len(merged_1))
-
-merged_2 = merged_1.merge(weights, on="order_key", how="inner")
-st.write("Rows after weights merge:", len(merged_2))
-
-st.stop()
 
 @st.cache_data
 def load_master():
