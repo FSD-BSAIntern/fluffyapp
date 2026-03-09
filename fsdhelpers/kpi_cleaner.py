@@ -93,12 +93,23 @@ def clean_qc_log_df(qclog: pd.DataFrame) -> pd.DataFrame:
 
     cleaned_qc_log = cleaned_qc_log[
         ~(cleaned_qc_log["Shipment Date"].isna() & cleaned_qc_log["Agency Order #"].isna())
-    ]
+    ].copy()
+
     cleaned_qc_log["Shipment Date"] = cleaned_qc_log["Shipment Date"].ffill()
-    cleaned_qc_log["order_key"] = _make_order_key(cleaned_qc_log["Agency Order #"])
+
+    cleaned_qc_log["Shipment Date"] = pd.to_datetime(
+        cleaned_qc_log["Shipment Date"],
+        errors="coerce",
+        format="%m/%d/%Y"
+    )
+
+    cleaned_qc_log["order_key"] = (
+        cleaned_qc_log["Agency Order #"]
+        .astype(str)
+        .str.strip()
+    )
 
     return cleaned_qc_log.reset_index(drop=True)
-
 
 def build_master_dataset(
     orders: pd.DataFrame,
@@ -134,7 +145,7 @@ def build_master_dataset(
     master["No. of Pallets"] = pd.to_numeric(master["No. of Pallets"], errors="coerce")
     master["Shipment Date"] = pd.to_datetime(master["Shipment Date"], errors="coerce")
 
-    master = master[master["Shipment Date"] < pd.Timestamp("2025-11-16")].reset_index(drop=True)
+    master = master[master["Shipment Date"] < pd.Timestamp("11-16-2025")].reset_index(drop=True)
 
     return master
 
