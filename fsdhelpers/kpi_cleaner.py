@@ -138,3 +138,8 @@ def build_master_dataset(
 
     return master
 
+def load_and_build_master() -> pd.DataFrame:
+    orders = load_orders()
+    qclog = load_qclog()
+    weights = load_weights()
+    return build_master_dataset(orders, qclog, weights)
