@@ -94,7 +94,7 @@ def clean_orders_df(orders: pd.DataFrame) -> pd.DataFrame:
 
 def clean_qc_log_df(qclog: pd.DataFrame) -> pd.DataFrame:
     cleaned_qc_log = qclog.copy()
-
+    print(cleaned_qc_log["Shipment Date"].head(20).tolist())
     cleaned_qc_log = cleaned_qc_log[
         ~(cleaned_qc_log["Shipment Date"].isna() & cleaned_qc_log["Agency Order #"].isna())
     ].copy()
