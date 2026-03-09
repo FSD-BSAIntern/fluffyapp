@@ -2,18 +2,18 @@
 import streamlit as st
 
 st.set_page_config(
-    page_title="FluffyApp",
+    page_title="Fluffy",
     page_icon="🥑",
     layout="wide"
 )
 
-st.title("Welcome to FluffyApp! 🥑")
+st.title("Welcome to Fluffy! 🥑")
 st.write("Please select a page from the sidebar 👈 to get started.")
 
-st.sidebar.header("About FluffyApp")
+st.sidebar.header("About Fluffy")
 
 st.write("""
-FluffyApp is an all-in-one interface specifically for Feeding San Diego.
+Fluffy is an all-in-one interface specifically for Feeding San Diego.
 
 It currently has two main features:
 
