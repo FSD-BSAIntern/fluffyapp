@@ -21,8 +21,9 @@ order_trends_page = st.Page("pages/MemberOrderTrendsApp/2_Order_Trends.py", titl
 hompage_page = st.Page("pages/Home.py", title="Home", icon=":material/house:")
 
 if st.session_state.logged_in:
-    pg = st.PageManager([hompage_page, ceres6_page, order_trends_page, logout_page])
+    pg = st.navigation([hompage_page, ceres6_page, order_trends_page, logout_page])
     
-else:    pg = st.PageManager([hompage_page, login_page])
+else:    
+    pg = st.navigation([hompage_page, login_page])
 
 pg.run()
