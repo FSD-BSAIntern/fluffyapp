@@ -114,8 +114,8 @@ def clean_qc_log_df(qclog: pd.DataFrame) -> pd.DataFrame:
 
 def build_master_dataset(
     orders: pd.DataFrame,
-    qclog: pd.DataFrame,
     weights: pd.DataFrame,
+    qclog: pd.DataFrame
 ) -> pd.DataFrame:
     cleaned_orders = clean_orders_df(orders)
     cleaned_qc_log = clean_qc_log_df(qclog)
@@ -164,6 +164,6 @@ def build_master_dataset(
 
 def load_and_build_master() -> pd.DataFrame:
     orders = load_orders()
-    qclog = load_qclog()
     weights = load_weights()
-    return build_master_dataset(orders, qclog, weights)
+    qclog = load_qclog()
+    return build_master_dataset(orders, weights, qclog)
