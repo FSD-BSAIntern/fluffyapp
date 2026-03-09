@@ -56,22 +56,24 @@ try:
     df_raw = load_dataset(str(CSV_PATH))
     df = add_derived_fields(df_raw)
     
-    with st.expander("DEBUG: Gross Weight parsing", expanded=True):
-        st.write("File path:", CSV_PATH)
-        st.write("Rows loaded:", len(df_raw))
+     
+    # DEBUGGING: Gross Weight parsing issues have been a common source of errors, so we include some debug info here to help identify problems with the source data. */
+    # with st.expander("DEBUG: Gross Weight parsing", expanded=True):
+    #     st.write("File path:", CSV_PATH)
+    #     st.write("Rows loaded:", len(df_raw))
 
-        # raw column before conversion is in df_raw
-        raw = df_raw["Gross Weight"]
-        st.write("Raw dtype:", raw.dtype)
-        st.write("Raw non-null count:", int(raw.notna().sum()))
+    #     # raw column before conversion is in df_raw
+    #     raw = df_raw["Gross Weight"]
+    #     st.write("Raw dtype:", raw.dtype)
+    #     st.write("Raw non-null count:", int(raw.notna().sum()))
 
-        # show examples of raw values that might break parsing
-        sample_bad = raw[raw.astype(str).str.contains(",", na=False)].head(10)
-        st.write("Examples with commas:", sample_bad.tolist())
+    #     # show examples of raw values that might break parsing
+    #     sample_bad = raw[raw.astype(str).str.contains(",", na=False)].head(10)
+    #     st.write("Examples with commas:", sample_bad.tolist())
 
-        # Compare totals
-        st.write("Sum of derived gross_weight:", float(df["gross_weight"].sum()))
-        st.write("Count of rows where derived gross_weight == 0:", int((df["gross_weight"] == 0).sum()))
+    #     # Compare totals
+    #     st.write("Sum of derived gross_weight:", float(df["gross_weight"].sum()))
+    #     st.write("Count of rows where derived gross_weight == 0:", int((df["gross_weight"] == 0).sum()))
     
     # --- Product Type Bucket ---
     PT_COL = "FBC Product Type Code"
