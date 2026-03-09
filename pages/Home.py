@@ -17,11 +17,11 @@ FluffyApp is an all-in-one interface specifically for Feeding San Diego.
 
 It currently has two main features:
 
-**1. Ceres6 Query Tool** 🔍  
+**1. Ceres6 Query Tool** 🔍 <br>
 A user-friendly interface for querying the Ceres6 database, allowing users to locate 
 specific information in reports about food distribution, member organizations, and more.
 
-**2. Member Distribution Trends** 📈 
+**2. Member Distribution Trends** 📈 <br>
 A tool for visualizing and analyzing trends in member or regional distribution over time.
 You also have the option to download a copy of the report for further analysis.
 """)
