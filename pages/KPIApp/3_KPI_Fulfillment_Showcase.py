@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-from fsdhelpers.kpi_cleaner import load_and_build_master
+from fsdhelpers.kpi_cleaner import build_master_dataset
 from fsdhelpers import kpi_summaries
 
 
@@ -9,7 +9,7 @@ st.title("KPI Optimization Model")
 
 @st.cache_data
 def load_master():
-    return load_and_build_master()
+    return build_master_dataset()
 
 master = load_master()
 
