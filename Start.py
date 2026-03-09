@@ -1,29 +1,28 @@
 # Interface for starting FluffyApp and selecting between pages
 import streamlit as st
 
-st.set_page_config(
-    page_title="FluffyApp", 
-    page_icon="🥑", 
-    layout="wide")
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
 
-st.write("Welcome to FluffyApp! Please select a page from the sidebar to get started.")
+def login():
+    if st.button("Log in"):
+        st.session_state.logged_in = True
+        st.rerun()
 
-st.markdown("""
-FluffyApp is an all-in one interface specifically for Feeding San Diego. It currently has two main features:
-1. Ceres6 Query Tool: A user-friendly interface for querying the Ceres6 database, allowing users to locate 
-    specific information in reports about food distribution, member organizations, and more.
-2. Member Distribution Trends: A tool for visualizing and analyzing trends in member or regional distribution over time.
-    You also have the option to download a copy of the report for further analysis.
-"""
-)
+def logout():
+    if st.button("Log out"):
+        st.session_state.logged_in = False
+        st.rerun()
 
-# Page navigation
-pages = [
-    st.Page("pages/Ceres6App/1_Ceres6_Search.py",  title =   "Ceres6 Query Tool"),
-    st.Page("pages/MemberOrderTrendsApp/2_Order_Trends.py", title =   "Member Distribution Trends")
-]
+login_page = st.Page(login, title="Log in", icon=":material/login:")
+logout_page = st.Page(logout, title="Log out", icon=":material/logout:")
+ceres6_page = st.Page("pages/Ceres6App/1_Ceres6_Search.py",  title =   "Ceres6 Query Tool")
+order_trends_page = st.Page("pages/MemberOrderTrendsApp/2_Order_Trends.py", title =   "Member Distribution Trends")
+hompage_page = st.Page("pages/Home.py", title="Home", icon=":house:")
 
-# Add pages to sidebar
-pg = st.navigation(pages)
+if st.session_state.logged_in:
+    pg = st.PageManager([hompage_page, ceres6_page, order_trends_page, logout_page])
+    
+else:    pg = st.PageManager([hompage_page, login_page])
 
 pg.run()
