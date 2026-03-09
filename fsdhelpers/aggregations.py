@@ -6,8 +6,8 @@ from typing import List, Literal, Optional, Tuple
 import numpy as np
 import pandas as pd
 
-import config
-from data_prep import Granularity, Mode, ResolvedWindow, week_start_monday, month_start
+from . import config
+from .data_prep import Granularity, Mode, ResolvedWindow, week_start_monday, month_start
 
 
 def _entity_col(mode: Mode) -> str:

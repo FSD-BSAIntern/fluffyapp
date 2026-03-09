@@ -7,7 +7,7 @@ from typing import List, Optional, Tuple, Literal
 
 import pandas as pd
 
-import config
+from . import config
 
 
 Mode = Literal["Agency", "Region"]

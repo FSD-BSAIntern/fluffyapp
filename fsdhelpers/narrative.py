@@ -6,7 +6,7 @@ from typing import List
 import numpy as np
 import pandas as pd
 
-from charts import period_label
+from .charts import period_label
 
 def _per_period_word(granularity: str) -> str:
     g = (granularity or "").strip().lower()
