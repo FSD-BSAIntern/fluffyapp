@@ -44,14 +44,13 @@ def _format_pct(x) -> str:
 def _period_label(granularity: str, period_key: pd.Timestamp) -> str:
     return period_label(granularity, period_key)
 
-st.title("Distribution Trend Calculator")
+st.title("Member Distribution Trend(s) Calculator")
 
 # --- Data path ---
-st.subheader("Data Source")
+# st.subheader("Data Source")
 
 APP_DIR = Path(__file__).resolve().parent
 CSV_PATH = APP_DIR / "ProgramDistribution-idlrOG.csv"
-print(str(CSV_PATH))
 
 try:
     df_raw = load_dataset(str(CSV_PATH))
