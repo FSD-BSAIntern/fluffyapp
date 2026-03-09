@@ -4,7 +4,7 @@ from __future__ import annotations
 from typing import Optional
 
 import pandas as pd
-from plotly import graph_objects as go
+import plotly.graph_objects as go
 
 
 def period_label(granularity: str, period_key: pd.Timestamp) -> str:
