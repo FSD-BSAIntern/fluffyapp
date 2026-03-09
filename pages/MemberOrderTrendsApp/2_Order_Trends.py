@@ -9,6 +9,14 @@ import pandas as pd
 import numpy as np
 import streamlit as st
 
+import os
+import sys
+
+st.write("Current working directory:", os.getcwd())
+st.write("This file:", __file__)
+st.write("sys.path:", sys.path)
+st.write("Root contents:", os.listdir(os.getcwd()))
+
 from fsdhelpers import config
 from fsdhelpers.data_prep import add_derived_fields, load_dataset, resolve_window
 from fsdhelpers.aggregations import (
