@@ -13,9 +13,9 @@ st.write("Please select a page from the sidebar 👈 to get started.")
 st.sidebar.header("About Fluffy")
 
 st.write("""
-Fluffy is an all-in-one interface specifically for Feeding San Diego.
+Fluffy is an all-in-one interface designed specifically for Feeding San Diego.
 
-It currently has two main features:
+It currently has three main features:
 
 **1. Ceres6 Query Tool** 🔍 \\
 A user-friendly interface for querying the Ceres6 database, allowing users to locate specific information in reports about food distribution, member organizations, and more. Current primary usecase is for report-building, with plans to expand capabilities post-feedback.
