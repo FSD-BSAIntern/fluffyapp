@@ -8,7 +8,7 @@ st.set_page_config(
 )
 
 st.title("Welcome to Fluffy! 🥑")
-st.subtitle("Please select a page from the sidebar 👈 to get started.")
+st.write("Please select a page from the sidebar 👈 to get started.")
 
 st.sidebar.header("About Fluffy")
 
