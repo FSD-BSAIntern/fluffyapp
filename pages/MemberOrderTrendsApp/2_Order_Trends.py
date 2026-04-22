@@ -61,6 +61,12 @@ st.write("resolved path:", CSV_PATH.resolve())
 st.write("exists:", CSV_PATH.exists())
 st.write("is file:", CSV_PATH.is_file())
 
+parent = CSV_PATH.parent
+if parent.exists():
+    st.write("files in folder:", [p.name for p in parent.iterdir()])
+else:
+    st.write("parent folder does not exist")
+
 APP_DIR = Path(__file__).resolve().parent
 CSV_PATH = APP_DIR / "ProgramDistribution-idlrOG.csv"
 
@@ -87,6 +93,7 @@ try:
         choices,
         default="Non-Produce"
         )
+
         
 except Exception as e:
     st.error(str(e))
