@@ -9,6 +9,7 @@ import re
 from pathlib import Path
 import pandas as pd
 import streamlit as st
+import os
 
 
 # ---------- Config ----------
@@ -99,6 +100,18 @@ st.sidebar.header("Break Me!")
 
 APP_DIR = Path(__file__).resolve().parent
 CSV_PATH = APP_DIR / "Ceres6 Cheatsheet.csv"
+
+st.write("cwd:", os.getcwd())
+st.write("resolved path:", CSV_PATH.resolve())
+st.write("exists:", CSV_PATH.exists())
+st.write("is file:", CSV_PATH.is_file())
+
+parent = CSV_PATH.parent
+if parent.exists():
+    st.write("files in folder:", [p.name for p in parent.iterdir()])
+else:
+    st.write("parent folder does not exist")
+
 
 @st.cache_data
 def load_data(path: Path) -> pd.DataFrame:
