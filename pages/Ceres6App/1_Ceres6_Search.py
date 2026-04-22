@@ -99,32 +99,40 @@ st.write('Ask Something Like: "Where can I find agency delivery zone codes?"')
 st.sidebar.header("Break Me!")
 
 APP_DIR = Path(__file__).resolve().parent
-CSV_PATH = APP_DIR / "Ceres6 Cheatsheet.csv"
+CSV_PATH = Path("pages/Ceres6App/Ceres6 Cheatsheet.csv")
 
 st.write("cwd:", os.getcwd())
 st.write("app dir:", APP_DIR)
 st.write("resolved path:", CSV_PATH.resolve())
 st.write("exists:", CSV_PATH.exists())
 st.write("is file:", CSV_PATH.is_file())
+st.write("app dir:", APP_DIR)
+st.write("all files:", [str(p) for p in APP_DIR.rglob("*")][:200])
+st.write("__file__:", __file__)
+st.write("resolved __file__:", Path(__file__).resolve())
+st.write("parent:", Path(__file__).resolve().parent)
+
+st.write("file path string:", str(CSV_PATH))
+st.write("exists:", CSV_PATH.exists())
+st.write("is_file:", CSV_PATH.is_file())
+
+repo_root_guess = Path(__file__).resolve()
+for _ in range(4):
+    repo_root_guess = repo_root_guess.parent
+st.write("repo root guess:", repo_root_guess)
+
+st.write("all csvs under repo root:")
+all_csvs = [str(p) for p in repo_root_guess.rglob("*.csv")]
+st.write(all_csvs if all_csvs else "NO CSV FILES FOUND")
 
 if CSV_PATH.exists():
     st.write("size bytes:", CSV_PATH.stat().st_size)
     with open(CSV_PATH, "r", encoding="utf-8", errors="ignore") as f:
-        st.code(f.read(200))
-
-if APP_DIR.exists():
-    st.write('files in app folder:', sorted(p.name for p in APP_DIR.iterdir()))
+        preview = f.read(300)
+    st.code(preview)
 else:
-    st.error("App directory does not exist.")
+    st.error("Target CSV path does not exist")
     st.stop()
-
-if not CSV_PATH.exists() or not CSV_PATH.is_file():
-    st.error(
-    f"CSV not found at: {CSV_PATH}\n\n"
-    "Ensure file is properly uploaded or the path is correct")
-    csv_candidates = sorted(p.name for p in APP_DIR.glob("*csv"))
-    st.write("Other CSV files found in:", csv_candidates if csv_candidates else "None")
-    st.stop
 
 @st.cache_data
 def load_data(path_str: str) -> pd.DataFrame:
