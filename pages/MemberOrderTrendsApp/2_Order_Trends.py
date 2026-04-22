@@ -54,11 +54,18 @@ st.sidebar.header("Find Something Cool!")
 
 # Debugging File Not Found
 
+CSV_PATH = Path("pages/MemberOrderTrendsApp/ProgramDistribution-idlrOG.csv")
+
+st.write("cwd:", os.getcwd())
+st.write("resolved path:", CSV_PATH.resolve())
+st.write("exists:", CSV_PATH.exists())
+st.write("is file:", CSV_PATH.is_file())
+
 APP_DIR = Path(__file__).resolve().parent
 CSV_PATH = APP_DIR / "ProgramDistribution-idlrOG.csv"
 
 try:
-    df_raw = load_dataset(CSV_PATH)
+    df_raw = load_dataset(str(CSV_PATH))
     df = add_derived_fields(df_raw)
     
     # --- Product Type Bucket ---
@@ -71,7 +78,7 @@ try:
     conditions = [
         pt_num.isin(PRODUCE_CODES),
         pt_num.isin(NONFOOD_CODES),
-    ]
+        ]
     
     choices = ["Produce", "Non-Food"]
     
