@@ -52,29 +52,14 @@ st.sidebar.header("Find Something Cool!")
 # --- Data path ---
 # st.subheader("Data Source")
 
+# Debugging File Not Found
+
 APP_DIR = Path(__file__).resolve().parent
 CSV_PATH = APP_DIR / "ProgramDistribution-idlrOG.csv"
 
 try:
     df_raw = load_dataset(str(CSV_PATH))
     df = add_derived_fields(df_raw)
-    
-    # with st.expander("DEBUG: Gross Weight parsing", expanded=True):
-    #     st.write("File path:", CSV_PATH)
-    #     st.write("Rows loaded:", len(df_raw))
-
-    #     # raw column before conversion is in df_raw
-    #     raw = df_raw["Gross Weight"]
-    #     st.write("Raw dtype:", raw.dtype)
-    #     st.write("Raw non-null count:", int(raw.notna().sum()))
-
-    #     # show examples of raw values that might break parsing
-    #     sample_bad = raw[raw.astype(str).str.contains(",", na=False)].head(10)
-    #     st.write("Examples with commas:", sample_bad.tolist())
-
-    #     # Compare totals
-    #     st.write("Sum of derived gross_weight:", float(df["gross_weight"].sum()))
-    #     st.write("Count of rows where derived gross_weight == 0:", int((df["gross_weight"] == 0).sum()))
     
     # --- Product Type Bucket ---
     PT_COL = "FBC Product Type Code"
@@ -86,7 +71,7 @@ try:
     conditions = [
         pt_num.isin(PRODUCE_CODES),
         pt_num.isin(NONFOOD_CODES),
-        ]
+    ]
     
     choices = ["Produce", "Non-Food"]
     
@@ -95,52 +80,10 @@ try:
         choices,
         default="Non-Produce"
         )
-    
-    # with st.expander("DEBUG: Product Type totals", expanded=True):
-    #     st.write("Total gross_weight (no filters):", float(df["gross_weight"].sum()))
-    #     st.dataframe(
-    #         df.groupby(["FBC Product Type Code", "_product_type_bucket"], as_index=False)["gross_weight"].sum()
-    #         .sort_values("gross_weight", ascending=False)
-    #         .head(40),
-    #         use_container_width=True,
-    #         hide_index=True
-    #     )
-    #     st.dataframe(
-    #         df.groupby("_product_type_bucket", as_index=False)["gross_weight"].sum()
-    #         .sort_values("gross_weight", ascending=False),
-    #         use_container_width=True,
-    #         hide_index=True
-    #     )
-
-    # st.caption(f"Loaded {len(df):,} rows.")
         
 except Exception as e:
     st.error(str(e))
     st.stop()
-    
-finally:
-    df_raw = load_dataset(str(CSV_PATH))
-    df = add_derived_fields(df_raw)
-    
-     # --- Product Type Bucket ---
-    PT_COL = "FBC Product Type Code"
-    pt_num = pd.to_numeric(df[PT_COL], errors="coerce")
-
-    NONFOOD_CODES = {1, 2, 12, 13, 19, 20, 22}
-    PRODUCE_CODES = {28}
-
-    conditions = [
-        pt_num.isin(PRODUCE_CODES),
-        pt_num.isin(NONFOOD_CODES),
-        ]
-    
-    choices = ["Produce", "Non-Food"]
-    
-    df["_product_type_bucket"] = np.select(
-        conditions,
-        choices,
-        default="Non-Produce"
-        )
     
 # --- Controls ---
 st.subheader("Report Controls")
