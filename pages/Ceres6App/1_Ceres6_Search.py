@@ -102,24 +102,32 @@ APP_DIR = Path(__file__).resolve().parent
 CSV_PATH = APP_DIR / "Ceres6 Cheatsheet.csv"
 
 st.write("cwd:", os.getcwd())
+st.write("app dir:", APP_DIR)
 st.write("resolved path:", CSV_PATH.resolve())
 st.write("exists:", CSV_PATH.exists())
 st.write("is file:", CSV_PATH.is_file())
 
-parent = CSV_PATH.parent
-if parent.exists():
-    st.write("files in folder:", [p.name for p in parent.iterdir()])
+if APP_DIR.exists():
+    st.write('files in app folder:', sorted(p.name for p in APP_DIR.iterdir()))
 else:
-    st.write("parent folder does not exist")
+    st.error("App directory does not exist.")
+    st.stop()
 
+if not CSV_PATH.exists() or not CSV_PATH.is_file():
+    st.error(
+    f"CSV not found at: {CSV_PATH}\n\n"
+    "Put 'Ensure file is properly uploaded or the path is correct")
+    csv_candidates = sorted(p.name for p in APP_DIR.glob("*csv"))
+    st.write("Other CSV files found in:", csv_candidates if csv_candidates else "None")
+    st.stop
 
 @st.cache_data
-def load_data(path: Path) -> pd.DataFrame:
-    return pd.read_csv(path)
+def load_data(path_str: str) -> pd.DataFrame:
+    return pd.read_csv(path_str)
 
-df = load_data(CSV_PATH)
+df = load_data(str(CSV_PATH))
 
-# Validate columns
+# -------- Validate columns ----------
 required_cols = [COL_COMMON, COL_KEYWORD, COL_REPORT, COL_FULLKEY, COL_ENTITY, COL_CANON, COL_SYNONYMS]
 missing = [c for c in required_cols if c not in df.columns]
 if missing:
