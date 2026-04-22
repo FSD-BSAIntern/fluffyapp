@@ -383,7 +383,7 @@ def highlight_alert_cell(val):
         return "background-color: #ffe6e6; color: red; font-weight: bold;"
     return ""
 
-styled_y1 = y1_disp.style.applymap(
+styled_y1 = y1_disp.style.map(
     highlight_alert_cell,
     subset=["Alert"]
 )
