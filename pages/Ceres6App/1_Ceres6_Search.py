@@ -107,6 +107,11 @@ st.write("resolved path:", CSV_PATH.resolve())
 st.write("exists:", CSV_PATH.exists())
 st.write("is file:", CSV_PATH.is_file())
 
+if CSV_PATH.exists():
+    st.write("size bytes:", CSV_PATH.stat().st_size)
+    with open(CSV_PATH, "r", encoding="utf-8", errors="ignore") as f:
+        st.code(f.read(200))
+
 if APP_DIR.exists():
     st.write('files in app folder:', sorted(p.name for p in APP_DIR.iterdir()))
 else:
@@ -116,7 +121,7 @@ else:
 if not CSV_PATH.exists() or not CSV_PATH.is_file():
     st.error(
     f"CSV not found at: {CSV_PATH}\n\n"
-    "Put 'Ensure file is properly uploaded or the path is correct")
+    "Ensure file is properly uploaded or the path is correct")
     csv_candidates = sorted(p.name for p in APP_DIR.glob("*csv"))
     st.write("Other CSV files found in:", csv_candidates if csv_candidates else "None")
     st.stop
