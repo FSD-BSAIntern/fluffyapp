@@ -54,7 +54,7 @@ st.sidebar.header("Find Something Cool!")
 
 # Debugging File Not Found
 
-CSV_PATH = Path("pages/MemberOrderTrendsApp/ProgramDistribution-idlrOG.csv")
+CSV_PATH = Path("pages/MemberOrderTrendsApp/ProgramDistribution-Master.csv")
 
 st.write("cwd:", os.getcwd())
 st.write("resolved path:", CSV_PATH.resolve())
@@ -68,7 +68,7 @@ else:
     st.write("parent folder does not exist")
 
 APP_DIR = Path(__file__).resolve().parent
-CSV_PATH = APP_DIR / "ProgramDistribution-idlrOG.csv"
+CSV_PATH = APP_DIR / "ProgramDistribution-Master.csv"
 
 try:
     df_raw = load_dataset(str(CSV_PATH))
