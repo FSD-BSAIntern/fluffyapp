@@ -54,9 +54,10 @@ st.sidebar.header("Find Something Cool!")
 
 # Debugging File Not Found
 
-CSV_PATH = Path("pages/MemberOrderTrendsApp/ProgramDistribution-idlrOG.csv")
+APP_DIR = Path(__file__).resolve().parent
+CSV_PATH = APP_DIR / "ProgramDistribution-idlrOG.csv"
 
-st.write("cwd:", os.getcwd())
+st.write("csv path:", CSV_PATH)
 st.write("resolved path:", CSV_PATH.resolve())
 st.write("exists:", CSV_PATH.exists())
 st.write("is file:", CSV_PATH.is_file())
@@ -64,11 +65,8 @@ st.write("is file:", CSV_PATH.is_file())
 parent = CSV_PATH.parent
 if parent.exists():
     st.write("files in folder:", [p.name for p in parent.iterdir()])
-else:
+if not CSV_PATH.exists():
     st.write("parent folder does not exist")
-
-APP_DIR = Path(__file__).resolve().parent
-CSV_PATH = APP_DIR / "ProgramDistribution-idlrOG.csv"
 
 try:
     df_raw = load_dataset(str(CSV_PATH))
@@ -94,9 +92,8 @@ try:
         default="Non-Produce"
         )
 
-        
 except Exception as e:
-    st.error(str(e))
+    st.error(f"{type(e).__name__}: (e")
     st.stop()
     
 # --- Controls ---
