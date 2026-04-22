@@ -52,7 +52,8 @@ st.sidebar.header("Find Something Cool!")
 # --- Data path ---
 # st.subheader("Data Source")
 
-CSV_PATH = "pages/MemberOrderTrendsApp/ProgramDistribution-idlrOG.csv"
+APP_DIR = Path(__file__).resolve().parent
+CSV_PATH = APP_DIR / "ProgramDistribution-idlrOG.csv"
 
 try:
     df_raw = load_dataset(str(CSV_PATH))
